@@ -17,8 +17,14 @@ public class BlogController {
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Title cannot be empty");
         }
+        if(title.length()>50){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Title cannot be longer than 50 characters");
+        }
         if (content == null || content.trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Content cannot be empty");
+        }
+        if(content.length()>1000){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Content cannot be longer than 1000 characters");
         }
         String post = title + ":" + content;
         posts.add(post);
