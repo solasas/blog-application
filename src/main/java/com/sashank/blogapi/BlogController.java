@@ -1,6 +1,8 @@
 package com.sashank.blogapi;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +13,16 @@ public class BlogController {
     private static List<String> posts = new ArrayList<>();
 
     @PostMapping
-    public String createPost(@RequestParam String title, @RequestParam String content) {
+    public ResponseEntity<String> createPost(@RequestParam String title, @RequestParam String content) {
+        if (title == null || title.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Title cannot be empty");
+        }
+        if (content == null || content.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Content cannot be empty");
+        }
         String post = title + ":" + content;
         posts.add(post);
-        return "Post created";
+        return ResponseEntity.status(HttpStatus.CREATED).body("Post created");
     }
 
     @GetMapping
