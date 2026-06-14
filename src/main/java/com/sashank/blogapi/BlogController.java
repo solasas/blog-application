@@ -1,5 +1,6 @@
 package com.sashank.blogapi;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/posts")
 public class BlogController {
+    @Value("${blog.post.content.max-length}")
+    private int contentmaxlength;
 
     private static List<String> posts = new ArrayList<>();
 
@@ -48,7 +51,8 @@ public class BlogController {
 
     @PostMapping("/validate")
     public String validateContent(@RequestParam String content) {
-        if (content.length() > 5000) {
+
+        if (contentmaxlength > 5000) {
             return "Too long";
         }
         return "OK";
