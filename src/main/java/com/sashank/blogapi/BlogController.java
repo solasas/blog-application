@@ -13,7 +13,9 @@ public class BlogController {
     private static List<String> posts = new ArrayList<>();
 
     @PostMapping
-    public ResponseEntity<String> createPost(@RequestParam String title, @RequestParam String content) {
+    public ResponseEntity<String> createPost(@RequestBody Post request) {
+        String title=request.getTitle();
+        String content=request.getContent();
         if (title == null || title.trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Title cannot be empty");
         }
@@ -37,8 +39,11 @@ public class BlogController {
     }
 
     @GetMapping("/{id}")
-    public String getPost(@PathVariable int id) {
-        return posts.get(id);
+    public ResponseEntity<String> getPost(@PathVariable int id) {
+        if(id<0 || id>=posts.size()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: Post not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(posts.get(id));
     }
 
     @PostMapping("/validate")
@@ -50,16 +55,19 @@ public class BlogController {
     }
 
     @DeleteMapping("/{id}")
-    public String deletePost(@PathVariable int id) {
+    public ResponseEntity<String> deletePost(@PathVariable int id) {
+        if(id<0 || id> posts.size()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: Post not found");
+        }
         posts.remove(id);
-        return "Deleted";
+        return ResponseEntity.status(HttpStatus.OK).body("Post deleted");
     }
 
 @GetMapping("/total")
 public String getTotalWordCount() {
-    List<String> wordCounts = List.of("100", "200", "300");
-    String total = "";
-    for (String count : wordCounts) {
+    List<Integer> wordCounts = List.of(100, 200, 300);
+    int total = 0;
+    for (int count : wordCounts) {
         total += count;
     }
     return "Total words: " + total;
